@@ -22,6 +22,8 @@ PROJ_ID = 209284
 PDF_PATH = "/data/torrents/CREST-4/CREST-4/"
 # The path to a CSV file containing all of the files and their metadata
 METADATA_CSV = "/data/torrents/CREST-4/CREST metadata 4.csv"
+# Column which contains a unique identifier for the file (zero indexed)
+ID_COL = 5
 # How many upload threads to run in parallel - more will upload quicker, but
 # may lead to issues if uploads are too fast.  This is also heavily dependent
 # on your connections upload bandwidth
@@ -75,7 +77,7 @@ def get_new_files(uploaded_docs):
         reader = csv.reader(metadata)
         HEADERS = next(reader)
         for row in reader:
-            if row[5] not in uploaded_docs:
+            if row[ID_COL] not in uploaded_docs:
                 yield row
 
 
@@ -501,7 +503,7 @@ def get_rows_from_document_numbers(document_numbers):
         reader = csv.reader(metadata)
         HEADERS = next(reader)
         for row in reader:
-            if row[5] in document_numbers:
+            if row[ID_COL] in document_numbers:
                 rows.append(row)
     return rows
 
