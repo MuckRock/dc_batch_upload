@@ -30,3 +30,17 @@ you have some large files, you may need to reduce the batch size to succesfully
 upload them.  Files larger than 500MB are never accepted.
 
 
+## Requirements
+- System with [Python](https://www.python.org/) and [pip](https://pip.pypa.io/en/stable/installation/) installed. 
+
+- The DocumentCloud Batch Uploader Script. Download the [zip](https://github.com/MuckRock/dc_batch_upload/archive/refs/heads/master.zip) or use the [GitHub CLI](https://github.com/cli/cli#installation) by running `gh repo clone MuckRock/dc_batch_upload` in your terminal/shell/command prompt.
+
+- The project ID of the project you would like to upload the documents to. You can find this project ID by clicking on a project from within DocumentCloud and copying the number after the title of the project and the - in the search bar. 
+
+- The filepath to the directory of documents you would like to upload to DocumentCloud. 
+Example: '/home/bob/Documents/bulkupload' or on Windows 'C:\Users\bob\Documents\bulkupload'
+
+- A CSV file with at least two columns: `title` and one other column for the file names, by default it is `document_number` or you can specify a different one using `--id_col your_column_name_here` with the script.
+`title` is a human readable title that you would like for the documents, while `document_number` is the actual name of the file on your computer minus the extension. For example, if I have: /home/bob/Documents/bulkupload/test.pdf, `test` would be the document_number. An easy way to generate a document_number list is by piping the command to list the name of all your files in the directory to a CSV file. On Linux you can use ``` ls -1 | sed -e 's/\.pdf$//' > ~/result.csv ``` which will create a list of files in you current directory minus the extension (.pdf) and drop them in a file for you in your home directory. There are likely similar. You have to remember to insert `title` and `document_number` (or your custom column name) in the first row. If you don't have a list of titles, you can copy the document_number column over or just make the titles numerical (1, 2, 3, etc) by auto-filling. The other columns you provide are additional metadata you'd like to upload as key/value pairs. Example: one could have a column titled publication_year and the values in each row could be the year the document was published. 
+
+- You need to set DC_USERNAME (your DocumentCloud username) and DC_PASSWORD (your DocumentCloud password) environment variables on your system ([Linux](https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/), [Mac OS X](https://phoenixnap.com/kb/set-environment-variable-mac), [Windows](https://phoenixnap.com/kb/windows-set-environment-variable#ftoc-heading-1)). 
