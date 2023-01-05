@@ -68,7 +68,7 @@ class BatchUploader:
             if i % 1000 == 0:
                 print(f"queueing file #{i}")
             queue.put(row)
-            if i >= (self.args.max - 1):
+            if self.args.max is not None and i >= (self.args.max - 1):
                 break
             if event.is_set():
                 break
@@ -302,7 +302,7 @@ class BatchUploader:
                 print(current_thread().name, "done")
                 return
 
-    def delete_proj(self):
+    def delete_proj(self, proj):
         """
         Delete all documents in the project
 
@@ -312,9 +312,7 @@ class BatchUploader:
         client = documentcloud.DocumentCloud(
             username=os.environ["DC_USERNAME"], password=os.environ["DC_PASSWORD"]
         )
-        for group in grouper(
-            client.documents.search(f"project:{self.args.project_id}"), 25
-        ):
+        for group in grouper(client.documents.search(f"project:{proj}"), 25):
             ids = [str(d.id) for d in group if d]
             # print(ids)
             if ids:
