@@ -44,10 +44,9 @@ Example: '/home/bob/Documents/bulkupload' or on Windows 'C:\Users\bob\Documents\
 
 - A CSV file with at least two columns: `title` and one other column for the file names, by default it is `document_number` or you can specify a different one using `--id_col your_column_name_here` with the script.
 `title` is a human readable title that you would like for the documents, while `document_number` is the actual name of the file on your computer minus the extension. For example, if I have: /home/bob/Documents/bulkupload/test.pdf, `test` would be the document_number. 
-
-You may run the following to generate a CSV file for you given a directory of documents if the title is not important for you to configure manually:
-```python3 batch_upload.py -p PROJECT_ID --path PATH --csv CSV_NAME --generate_csv```
-You would then run the following once more to do the upload:
-```python3 batch_upload.py -p PROJECT_ID --path PATH --csv CSV_NAME``
+  You may run the following to generate a CSV file for you given a directory of documents if the title is not important for you to configure manually:
+  ```python3 batch_upload.py -p PROJECT_ID --path PATH --csv CSV_NAME --generate_csv```
+  You would then run the following once more to do the upload:
+  ```python3 batch_upload.py -p PROJECT_ID --path PATH --csv CSV_NAME``
 
 
