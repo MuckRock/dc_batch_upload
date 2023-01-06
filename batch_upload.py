@@ -26,8 +26,8 @@ class BatchUploader:
         self.headers = None
         self.args = None
 
-    def id_col_index(self):
-        return self.headers.index(self.args.id_col)
+    def name_col_index(self):
+        return self.headers.index(self.args.name_col)
 
     def create_db(self):
         """Create a sqlite database to track files that have been uploaded"""
@@ -58,7 +58,7 @@ class BatchUploader:
             reader = csv.reader(metadata)
             self.headers = next(reader)
             for row in reader:
-                if row[self.id_col_index()] not in uploaded_docs:
+                if row[self.name_col_index()] not in uploaded_docs:
                     yield row
 
     def enqueue_files(self, queue, uploaded_docs, event):
@@ -115,7 +115,7 @@ class BatchUploader:
                 break
             doc_dict = self.row_to_dict(row)
             doc_dicts.append(doc_dict)
-        print(current_thread().name, [d["data"][self.args.id_col] for d in doc_dicts])
+        print(current_thread().name, [d["data"][self.args.name_col] for d in doc_dicts])
         return doc_dicts, finished
 
     def create_documents(self, client, doc_dicts, con, cur):
@@ -128,7 +128,7 @@ class BatchUploader:
             response.raise_for_status()
         except (APIError, RequestException) as exc:
             print("create documents exception", str(exc))
-            data = [(d["data"][self.args.id_col], 0, 1, str(exc)) for d in doc_dicts]
+            data = [(d["data"][self.args.name_col], 0, 1, str(exc)) for d in doc_dicts]
             print(data)
             cur.executemany(
                 "INSERT INTO documents VALUES(?, ?, ? ,?) "
@@ -152,7 +152,7 @@ class BatchUploader:
                 for url, doc_dict in zip(presigned_urls, doc_dicts):
                     pdf_path = os.path.join(
                         self.args.path,
-                        doc_dict["data"][self.args.id_col].lower() + ".pdf",
+                        doc_dict["data"][self.args.name_col].lower() + ".pdf",
                     )
                     print(
                         current_thread().name,
@@ -177,7 +177,7 @@ class BatchUploader:
         ]
         # get document numbers of errored documents to mark in db
         error_data = [
-            (d["data"][self.args.id_col], 0, 1, str(resp))
+            (d["data"][self.args.name_col], 0, 1, str(resp))
             for resp, d in zip(responses, doc_dicts)
             if isinstance(resp, Exception)
         ]
@@ -216,7 +216,7 @@ class BatchUploader:
             # log all as errors in the db
             print("process error", str(exc))
             data = [
-                (d["data"][self.args.id_col], 0, 1, str(exc))
+                (d["data"][self.args.name_col], 0, 1, str(exc))
                 for d in doc_dicts
                 if str(d["id"]) in doc_ids
             ]
@@ -236,7 +236,7 @@ class BatchUploader:
             raise
 
         data = [
-            (d["data"][self.args.id_col], 1, 0, "")
+            (d["data"][self.args.name_col], 1, 0, "")
             for d in doc_dicts
             if str(d["id"]) in doc_ids
         ]
@@ -281,7 +281,7 @@ class BatchUploader:
                 # exception catch all
                 print("Unknown exception")
                 data = [
-                    (d["data"][self.args.id_col], 0, 1, str(exc)) for d in doc_dicts
+                    (d["data"][self.args.name_col], 0, 1, str(exc)) for d in doc_dicts
                 ]
                 print(data)
                 cur.executemany(
@@ -350,7 +350,7 @@ class BatchUploader:
             print("document_number", document_number)
             results = list(
                 client.documents.search(
-                    "*:*", **{f"data_{self.args.id_col}": document_number}
+                    "*:*", **{f"data_{self.args.name_col}": document_number}
                 )
             )
 
@@ -447,7 +447,7 @@ class BatchUploader:
         print(errors.count)
 
         for result in errors:
-            document_number = result.data[self.args.id_col][0]
+            document_number = result.data[self.args.name_col][0]
             print("document_number", document_number)
 
             print("delete and reupload")
@@ -480,7 +480,7 @@ class BatchUploader:
             reader = csv.reader(metadata)
             self.headers = next(reader)
             for row in reader:
-                if row[self.id_col_index()] in document_numbers:
+                if row[self.name_col_index()] in document_numbers:
                     rows.append(row)
         return rows
 
@@ -503,7 +503,7 @@ class BatchUploader:
         except Exception as exc:
             # exception catch all
             print("Unknown exception")
-            data = [(d["data"][self.args.id_col], 0, 1, str(exc)) for d in doc_dicts]
+            data = [(d["data"][self.args.name_col], 0, 1, str(exc)) for d in doc_dicts]
             print(data)
             cur.executemany(
                 "INSERT INTO documents VALUES(?, ?, ? ,?) "
@@ -529,7 +529,7 @@ class BatchUploader:
                 results = list(
                     client.documents.search(
                         f"project:{self.args.project_id}",
-                        **{f"data_{self.args.id_col}": document_number},
+                        **{f"data_{self.args.name_col}": document_number},
                     )
                 )
                 if any(r.status == "success" for r in results):
@@ -555,6 +555,10 @@ class BatchUploader:
         start = time.time()
 
         self.parse_arguments()
+
+        if self.args.generate_csv:
+            self.generate_csv()
+            return
 
         if not os.path.exists(self.args.db_name):
             self.create_db()
@@ -610,10 +614,10 @@ class BatchUploader:
             help="Path to a CSV file containing the metadata for the PDFs",
         )
         parser.add_argument(
-            "--id_col",
-            default="document_number",
-            help="Name of column containing a unique identifier for the document "
-            "(default: document_number)",
+            "--name_col",
+            default="name",
+            help="Column containing the filename for the document"
+            "(default: name)",
         )
         parser.add_argument(
             "--num_threads",
@@ -645,7 +649,21 @@ class BatchUploader:
         parser.add_argument(
             "--source", default="", help="Set the source for the uploaded documents"
         )
+        parser.add_argument(
+            "--generate_csv",
+            action="store_true",
+            help="Generate the CSV file for documents in the given path",
+        )
         self.args = parser.parse_args()
+
+    def generate_csv(self):
+        """Generate a bare bones CSV file from a directory of files"""
+        with open(self.args.csv, "w", encoding="utf8") as metadata:
+            writer = csv.writer(metadata)
+            writer.writerow(["title", self.args.name_col])
+            for file in os.listdir(self.args.path):
+                if file.endswith(".pdf"):
+                    writer.writerow([file[:-4], file[:-4]])
 
 
 if __name__ == "__main__":

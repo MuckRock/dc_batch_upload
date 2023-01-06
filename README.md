@@ -12,7 +12,7 @@ metadata contains the document's title, and the rest is uploaded as key-value
 data on the document.  If you do not have a CSV file of all of your documents,
 you will need to create one.  It must contain a title column and a column which
 contains the file name (without the trailing .pdf), which by default is
-labelled `document_number`.  The title is the human readable title of the
+labelled `name`.  The title is the human readable title of the
 document.  The script will attempt to open the file by joining the given PDF
 path with the name from the file name column and appending .pdf.  For example.
 given a PDF path of `/data/files/` and a file name of `document`, the file will
