@@ -33,7 +33,7 @@ upload them.  Files larger than 500MB are never accepted.
 ## Requirements
 - System with [Python](https://www.python.org/) and [pip](https://pip.pypa.io/en/stable/installation/) installed. 
 
-- The DocumentCloud Batch Uploader Script. Download the [zip](https://github.com/MuckRock/dc_batch_upload/archive/refs/heads/master.zip) or use the [GitHub CLI](https://github.com/cli/cli#installation) by running: <br /> `gh repo clone MuckRock/dc_batch_upload` in your terminal/shell/command prompt.
+- The DocumentCloud Batch Uploader Script. Download the [zip](https://github.com/MuckRock/dc_batch_upload/archive/refs/heads/master.zip) or use the [GitHub CLI](https://github.com/cli/cli#installation) by running: <br /> `gh repo clone MuckRock/dc_batch_upload` 
 
 - The project ID of the project you would like to upload the documents to. You can find this project ID by clicking on a project from within DocumentCloud and copying the number after the title of the project and the - in the search bar. 
 
