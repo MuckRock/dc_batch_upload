@@ -40,7 +40,14 @@ upload them.  Files larger than 500MB are never accepted.
 - The filepath to the directory of documents you would like to upload to DocumentCloud. 
 Example: '/home/bob/Documents/bulkupload' or on Windows 'C:\Users\bob\Documents\bulkupload'
 
-- A CSV file with at least two columns: `title` and one other column for the file names, by default it is `document_number` or you can specify a different one using `--id_col your_column_name_here` with the script.
-`title` is a human readable title that you would like for the documents, while `document_number` is the actual name of the file on your computer minus the extension. For example, if I have: /home/bob/Documents/bulkupload/test.pdf, `test` would be the document_number. An easy way to generate a document_number list is by piping the command to list the name of all your files in the directory to a CSV file. On Linux you can use ``` ls -1 | sed -e 's/\.pdf$//' > ~/result.csv ``` which will create a list of files in you current directory minus the extension (.pdf) and drop them in a file for you in your home directory. There are likely similar. You have to remember to insert `title` and `document_number` (or your custom column name) in the first row. If you don't have a list of titles, you can copy the document_number column over or just make the titles numerical (1, 2, 3, etc) by auto-filling. The other columns you provide are additional metadata you'd like to upload as key/value pairs. Example: one could have a column titled publication_year and the values in each row could be the year the document was published. 
-
 - You need to set the environment variables DC_USERNAME (your DocumentCloud username) and DC_PASSWORD (your DocumentCloud password) on your system ([Linux](https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/), [Mac OS X](https://phoenixnap.com/kb/set-environment-variable-mac), [Windows](https://phoenixnap.com/kb/windows-set-environment-variable#ftoc-heading-1)). 
+
+- A CSV file with at least two columns: `title` and one other column for the file names, by default it is `document_number` or you can specify a different one using `--id_col your_column_name_here` with the script.
+`title` is a human readable title that you would like for the documents, while `document_number` is the actual name of the file on your computer minus the extension. For example, if I have: /home/bob/Documents/bulkupload/test.pdf, `test` would be the document_number. 
+
+You may run the following to generate a CSV file for you given a directory of documents if the title is not important for you to configure manually:
+```python3 batch_upload.py -p PROJECT_ID --path PATH --csv CSV_NAME --generate_csv```
+You would then run the following once more to do the upload:
+```python3 batch_upload.py -p PROJECT_ID --path PATH --csv CSV_NAME``
+
+
