@@ -658,7 +658,7 @@ class BatchUploader:
 
     def generate_csv(self):
         """Generate a bare bones CSV file from a directory of files"""
-        with open(self.args.csv, "w", encoding="utf8") as metadata:
+        with open(self.args.csv, "w", encoding="utf8", newline="") as metadata:
             writer = csv.writer(metadata)
             writer.writerow(["title", self.args.name_col])
             for file in os.listdir(self.args.path):
