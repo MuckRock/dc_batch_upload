@@ -152,7 +152,7 @@ class BatchUploader:
                 for url, doc_dict in zip(presigned_urls, doc_dicts):
                     pdf_path = os.path.join(
                         self.args.path,
-                        doc_dict["data"][self.args.name_col].lower() + ".pdf",
+                        doc_dict["data"][self.args.name_col],
                     )
                     print(
                         current_thread().name,
@@ -663,7 +663,7 @@ class BatchUploader:
             writer.writerow(["title", self.args.name_col])
             for file in os.listdir(self.args.path):
                 if file.endswith(".pdf"):
-                    writer.writerow([file[:-4], file[:-4]])
+                    writer.writerow([file[:-4], file])
 
 
 if __name__ == "__main__":
