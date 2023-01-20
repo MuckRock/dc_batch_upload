@@ -34,6 +34,7 @@ upload them.  Files larger than 500MB are never accepted.
 - DocumentCloud account that is [verified](https://airtable.com/shrZrgdmuOwW0ZLPM) to be able to upload documents. 
 
 - System with [Python](https://www.python.org/) and [pip](https://pip.pypa.io/en/stable/installation/) installed. 
+For Mac OS X users, you will additionally need to go to your Applications folder -> Python Folder -> and click on the "Install Certificates.command" file which is needed in order for SSL to work and for this script to work correctly. 
 
 - The DocumentCloud Batch Uploader Script. Download the [zip](https://github.com/MuckRock/dc_batch_upload/archive/refs/heads/master.zip) or use the [GitHub CLI](https://github.com/cli/cli#installation) by running: <br /> `gh repo clone MuckRock/dc_batch_upload` 
 
