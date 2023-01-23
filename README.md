@@ -34,6 +34,7 @@ upload them.  Files larger than 500MB are never accepted.
 - DocumentCloud account that is [verified](https://airtable.com/shrZrgdmuOwW0ZLPM) to be able to upload documents. 
 
 - System with [Python](https://www.python.org/) and [pip](https://pip.pypa.io/en/stable/installation/) installed. 
+For Mac OS X users, you will additionally need to go to your Applications folder -> Python Folder -> and click on the "Install Certificates.command" file which is needed in order for SSL to work and for this script to work correctly. 
 
 - The DocumentCloud Batch Uploader Script. Download the [zip](https://github.com/MuckRock/dc_batch_upload/archive/refs/heads/master.zip) or use the [GitHub CLI](https://github.com/cli/cli#installation) by running: <br /> `gh repo clone MuckRock/dc_batch_upload` 
 
@@ -46,8 +47,8 @@ Example: **/home/bob/Documents/bulkupload** or on Windows **C:\Users\bob\Documen
 
 - You need to set the environment variables **DC_USERNAME** (your DocumentCloud username) and **DC_PASSWORD** (your DocumentCloud password) on your system ([Linux](https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/), [Mac OS X](https://phoenixnap.com/kb/set-environment-variable-mac), [Windows](https://phoenixnap.com/kb/windows-set-environment-variable#ftoc-heading-1)). 
 
-- A CSV file with at least two columns: `title` and one other column for the file names, by default it is `document_number` or you can specify a different one using `--id_col your_column_name_here` with the script.
-`title` is a human readable title that you would like for the documents, while `document_number` is the actual name of the file on your computer minus the extension. <br /> For example, if I have: /home/bob/Documents/bulkupload/test.pdf, `test` would be the document_number. <br />
+- A CSV file with at least two columns: `title` and one other column for the file names, by default it is `name` or you can specify a different one using `--id_col your_column_name_here` with the script.
+`title` is a human readable title that you would like for the documents, while `name` is the actual name of the file on your computer minus the extension. <br /> For example, if I have: /home/bob/Documents/bulkupload/test.pdf, `test` would be the document_number. <br />
 You may run the following to generate a CSV file for you given a directory of documents if the title is not important for you to configure: <br />
   ```python3 batch_upload.py -p PROJECT_ID --path PATH --csv CSV_NAME --generate_csv``` <br />
   You would then run the following once more to do the upload: <br />
