@@ -38,12 +38,14 @@ For Mac OS X users, you will additionally need to go to your Applications folder
 
 - The DocumentCloud Batch Uploader Script. Download the [zip](https://github.com/MuckRock/dc_batch_upload/archive/refs/heads/master.zip) or use the [GitHub CLI](https://github.com/cli/cli#installation) by running: <br /> `gh repo clone MuckRock/dc_batch_upload` 
 
+- Install the required packages for the script to work. Opening a terminal in the directory where the script is located, run: <br> ```pip install -r requirements.txt```
+
 - The project ID of the project you would like to upload the documents to. You can find this project ID by clicking on a project from within DocumentCloud and copying the number after the title of the project and the - in the search bar. 
 
-- The filepath to the directory of documents you would like to upload to DocumentCloud. 
-Example: '/home/bob/Documents/bulkupload' or on Windows 'C:\Users\bob\Documents\bulkupload'
+- The filepath to the directory of documents you would like to upload to DocumentCloud. <br>
+Example: **/home/bob/Documents/bulkupload** or on Windows **C:\Users\bob\Documents\bulkupload**
 
-- You need to set the environment variables DC_USERNAME (your DocumentCloud username) and DC_PASSWORD (your DocumentCloud password) on your system ([Linux](https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/), [Mac OS X](https://phoenixnap.com/kb/set-environment-variable-mac), [Windows](https://phoenixnap.com/kb/windows-set-environment-variable#ftoc-heading-1)). 
+- You need to set the environment variables **DC_USERNAME** (your DocumentCloud username) and **DC_PASSWORD** (your DocumentCloud password) on your system ([Linux](https://linuxize.com/post/how-to-set-and-list-environment-variables-in-linux/), [Mac OS X](https://phoenixnap.com/kb/set-environment-variable-mac), [Windows](https://phoenixnap.com/kb/windows-set-environment-variable#ftoc-heading-1)). 
 
 - A CSV file with at least two columns: `title` and one other column for the file names, by default it is `name` or you can specify a different one using `--id_col your_column_name_here` with the script.
 `title` is a human readable title that you would like for the documents, while `name` is the actual name of the file on your computer minus the extension. <br /> For example, if I have: /home/bob/Documents/bulkupload/test.pdf, `test` would be the document_number. <br />
