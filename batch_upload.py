@@ -560,6 +560,11 @@ class BatchUploader:
             self.generate_csv()
             return
 
+        if self.args.reupload_errors:
+            self.reupload_error_files()
+            self.reupload_error_files2()
+            return
+
         if not os.path.exists(self.args.db_name):
             self.create_db()
 
@@ -653,6 +658,12 @@ class BatchUploader:
             "--generate_csv",
             action="store_true",
             help="Generate the CSV file for documents in the given path",
+        )
+
+        parser.add_argument(
+            "--reupload_errors",
+            action="store_true",
+            help="Re-upload files with errors during upload",
         )
         self.args = parser.parse_args()
 
