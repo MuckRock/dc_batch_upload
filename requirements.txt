@@ -1,5 +1,5 @@
 
 aiofiles
 aiohttp
-python-documentcloud
+python-documentcloud==4.2.0
 requests
