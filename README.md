@@ -40,7 +40,7 @@ For Mac OS X users, you will additionally need to go to your Applications folder
 
 - Install the required packages for the script to work. Opening a terminal in the directory where the script is located, run: <br> ```pip install -r requirements.txt```
 
-- The project ID of the project you would like to upload the documents to. You can find this project ID by clicking on a project from within DocumentCloud and copying the number after the title of the project and the - in the search bar. 
+- The project ID of the project you would like to upload the documents to. You can find this project ID by clicking on a project from within DocumentCloud and copying the number before the title of the project and the - in the search bar (`<project id>-project-name`).
 
 - The filepath to the directory of documents you would like to upload to DocumentCloud. <br>
 Example: **/home/bob/Documents/bulkupload** or on Windows **C:\Users\bob\Documents\bulkupload**
