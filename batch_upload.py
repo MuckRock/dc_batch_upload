@@ -204,13 +204,22 @@ class BatchUploader:
         return process_json
 
     def process_documents(self, client, doc_ids, doc_dicts, con, cur):
-        """Beging processing the documents after the files have been uploaded"""
-        # begin processing the documents
+        """Begin processing the documents after the files have been uploaded"""
         if not doc_ids:
             return
+
+        payload = [{"id": j["id"]} for j in doc_dicts if str(j["id"]) in doc_ids]
+
+        if self.args.force_ocr:
+            engine = (
+                self.args.ocr_engine or "tess4"
+            )  # default to tess4 if not specified
+            for p in payload:
+                p["force_ocr"] = True
+                p["ocr_engine"] = engine
         try:
             print(current_thread().name, "processing")
-            response = client.post("documents/process/", json={"ids": doc_ids})
+            response = client.post("documents/process/", json=payload)
             response.raise_for_status()
         except (APIError, RequestException) as exc:
             # log all as errors in the db
@@ -621,8 +630,7 @@ class BatchUploader:
         parser.add_argument(
             "--name_col",
             default="name",
-            help="Column containing the filename for the document"
-            "(default: name)",
+            help="Column containing the filename for the document" "(default: name)",
         )
         parser.add_argument(
             "--num_threads",
@@ -665,7 +673,23 @@ class BatchUploader:
             action="store_true",
             help="Re-upload files with errors during upload",
         )
+        # OCR arguments
+        parser.add_argument(
+            "--force_ocr", action="store_true", help="Forces OCR on uploaded documents"
+        )
+        parser.add_argument(
+            "--ocr_engine",
+            default="tess4",
+            choices=["tess4", "textract"],
+            help=(
+                "Specifies the OCR engine to use (tess4 or textract)."
+                "Default is tess4 for tesseract. (requires --force_ocr)"
+            ),
+        )
+
         self.args = parser.parse_args()
+        if self.args.ocr_engine and not self.args.force_ocr:
+            parser.error("--ocr_engine can only be used if --force_ocr is specified")
 
     def generate_csv(self):
         """Generate a bare bones CSV file from a directory of files"""
