@@ -29,7 +29,6 @@ re-upload files which had errors.  You may need to run them more than once.  If
 you have some large files, you may need to reduce the batch size to succesfully
 upload them.  Files larger than 500MB are never accepted.
 
-
 ## Requirements
 - DocumentCloud account that is [verified](https://airtable.com/shrZrgdmuOwW0ZLPM) to be able to upload documents. 
 
@@ -54,6 +53,13 @@ You may run the following to generate a CSV file for you given a directory of do
   You would then run the following once more to do the upload: <br />
   ```python3 batch_upload.py -p PROJECT_ID --path PATH --csv CSV_NAME``` <br />
 
+## Delays in indexing
+
+Do note that using the batch upload script intentionally delays indexing the documents. 
+This is to minimize the impact on our processing servers and load balance. This means
+that if you are on a deadline, you should plan accordingly to upload the documents several days
+before you intend to publish. 
+
 
 ## Handling Errors
 The process of uploading documents using the batch upload script is split into two distinct parts: <br>
@@ -64,3 +70,7 @@ The process of uploading documents using the batch upload script is split into t
 Running the batch upload script creates a SQLite database (.db) file. This database file can be queried using SQL or you may use a visual browser like [DB Browser for SQLite](https://sqlitebrowser.org/) to view individual document upload attempts and filter by those who have errors. If a document experienced an error upon upload, the errors column will be set to 1. If the errors column is set to 0, then the document uploaded successfully. You may also inspect each row to see the reason for the error. Common errors might include temporary network interruptions, the document not being found on the disk, the file being corrupt, or there was an error processing the document on DocumentCloud. <br>
 For ease of use, the script offers a command line argument ```--reupload_errors``` which calls two methods in the script- [reupload_error_files()](https://github.com/MuckRock/dc_batch_upload/blob/ddb7862b44c287365309c8abe9bd9886b0c7a72a/batch_upload.py#L336) which handles reuploading documents that had issues during upload and [reupload_error_files2()](https://github.com/MuckRock/dc_batch_upload/blob/ddb7862b44c287365309c8abe9bd9886b0c7a72a/batch_upload.py#L431) which handles reuploading documents that had issues during processing on DocumentCloud. If the document then is successfully uploaded after running the script with the argument ```--reupload_errors``` then its entry in the database is updated to reflect there are no more errors upon upload. <br>
 Any documents that still have error statuses after reattempt should be handled manually to see what the underlying issue is. 
+
+
+## OCR
+You may use the ```--force_ocr``` option along with the optional parameter ```--ocr_engine``` to use force OCR processing of any uploaded documents. The available engines are currently tess4 (tesseract) and textract, which is Amazon Textract. Do note that you will need enough AI credits to use Textract on your document set, which you may want to calculate beforehand. If you specify ```--force_ocr``` alone it will default to using tesseract. 
