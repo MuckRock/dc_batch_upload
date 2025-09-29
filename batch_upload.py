@@ -679,7 +679,6 @@ class BatchUploader:
         )
         parser.add_argument(
             "--ocr_engine",
-            default="tess4",
             choices=["tess4", "textract"],
             help=(
                 "Specifies the OCR engine to use (tess4 or textract)."
