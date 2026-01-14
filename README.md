@@ -7,9 +7,14 @@ that it can be stopped and restarted and it will pick up where it left off, and
 errors can be retried.  It uploads files in batches.  It can be stopped
 gracefully by pressing Ctrl+C (once) while it is running.
 
-The Crest documents contain a CSV of all the documents and metadata.  The
-metadata contains the document's title, and the rest is uploaded as key-value
-data on the document.  If you do not have a CSV file of all of your documents,
+The Crest documents contain a CSV of all the documents and metadata.  
+
+By default, when you have the script generate a CSV for you, it will only add a
+a column for the title of the document. To add additional metadata upon upload, 
+you can specify additional column names and respective row values
+which will be stored as key/value pairs on DocumentCloud upon upload. 
+
+If you do not have a CSV file of all of your documents,
 you will need to create one.  It must contain a title column and a column which
 contains the file name (without the trailing .pdf), which by default is
 labelled `name`.  The title is the human readable title of the
