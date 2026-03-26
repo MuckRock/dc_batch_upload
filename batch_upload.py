@@ -86,14 +86,21 @@ class BatchUploader:
         more efficient, but may cause a 30 minute delay between uploading the file
         and seeing it in the web view.
 
-        Sets the title based on an exptec title column in the CSV
+        Sets the title based on an expected title column in the CSV
 
         Sets the rest of the CSV columns as metadata
         """
 
         doc_dict = dict(zip(self.headers, row))
         title = doc_dict.pop("title")
-        return {
+        
+        # Optional description
+        description = doc_dict.pop("description", None)
+        # Ignore descriptions that are only whitespace
+        if description is not None:
+            description = description.strip()
+
+        payload = {
             "title": title,
             "projects": [self.args.project_id],
             "source": self.args.source,
@@ -101,6 +108,11 @@ class BatchUploader:
             "delayed_index": True,
             "data": doc_dict,
         }
+        # Add description to payload if it is present
+        if description:
+            payload["description"] = description
+
+        return payload
 
     def get_files_from_queue(self, queue):
         """Get files from the queue and convert them into a format suitable for upload
