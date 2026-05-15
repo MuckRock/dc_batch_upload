@@ -35,7 +35,7 @@ you have some large files, you may need to reduce the batch size to succesfully
 upload them.  Files larger than 500MB are never accepted.
 
 ## Requirements
-- DocumentCloud account that is [verified](https://airtable.com/shrZrgdmuOwW0ZLPM) to be able to upload documents. 
+- DocumentCloud account that is [verified](https://help.muckrock.com/Who-can-use-DocumentCloud-19ef8892696381e3a415ed636c0c1579) to be able to upload documents. 
 
 - System with [Python](https://www.python.org/) and [pip](https://pip.pypa.io/en/stable/installation/) installed. 
 For Mac OS X users, you will additionally need to go to your Applications folder -> Python Folder -> and click on the "Install Certificates.command" file which is needed in order for SSL to work and for this script to work correctly. 

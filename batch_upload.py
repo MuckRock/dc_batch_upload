@@ -26,6 +26,14 @@ class BatchUploader:
         self.headers = None
         self.args = None
 
+    def get_client(self):
+        """Create an authenticated DocumentCloud client"""
+        client = documentcloud.DocumentCloud(
+            username=os.environ["DC_USERNAME"], password=os.environ["DC_PASSWORD"]
+        )
+        client.session.headers["User-Agent"] += " DocumentCloud Batch Upload Script"
+        return client
+
     def name_col_index(self):
         return self.headers.index(self.args.name_col)
 
@@ -93,7 +101,7 @@ class BatchUploader:
 
         doc_dict = dict(zip(self.headers, row))
         title = doc_dict.pop("title")
-        
+
         # Optional description
         description = doc_dict.pop("description", None)
         # Ignore descriptions that are only whitespace
@@ -330,12 +338,9 @@ class BatchUploader:
         You can use this if you start the upload and something goes wrong early on,
         and it'll be easier to just start over.
         """
-        client = documentcloud.DocumentCloud(
-            username=os.environ["DC_USERNAME"], password=os.environ["DC_PASSWORD"]
-        )
+        client = self.get_client()
         for group in grouper(client.documents.search(f"project:{proj}"), 25):
             ids = [str(d.id) for d in group if d]
-            # print(ids)
             if ids:
                 resp = client.delete("documents/", params={"id__in": ",".join(ids)})
                 resp.raise_for_status()
@@ -359,9 +364,7 @@ class BatchUploader:
         Re-upload error files
         Files with errors during upload (error in sqlite db)
         """
-        client = documentcloud.DocumentCloud(
-            username=os.environ["DC_USERNAME"], password=os.environ["DC_PASSWORD"]
-        )
+        client = self.get_client()
         con = sqlite3.connect(self.args.db_name)
         cur = con.cursor()
 
@@ -454,9 +457,7 @@ class BatchUploader:
         Re-upload error files
         Files with errors during processing (error on DC)
         """
-        client = documentcloud.DocumentCloud(
-            username=os.environ["DC_USERNAME"], password=os.environ["DC_PASSWORD"]
-        )
+        client = self.get_client()
         con = sqlite3.connect(self.args.db_name)
         cur = con.cursor()
 
@@ -541,9 +542,7 @@ class BatchUploader:
         Should not be needed, but is useful if something goes wrong and you
         accidently upload multiple copies of the same document
         """
-        client = documentcloud.DocumentCloud(
-            username=os.environ["DC_USERNAME"], password=os.environ["DC_PASSWORD"]
-        )
+        client = self.get_client()
         with open("dupes", encoding="utf8") as dupes:
             for document_number in dupes:
                 print()
@@ -590,9 +589,7 @@ class BatchUploader:
             self.create_db()
 
         queue = Queue(maxsize=self.args.num_threads * self.args.batch_size * 2)
-        client = documentcloud.DocumentCloud(
-            username=os.environ["DC_USERNAME"], password=os.environ["DC_PASSWORD"]
-        )
+        client = self.get_client()
         event = Event()
 
         uploaded_docs = self.get_documents_uploaded()
@@ -679,7 +676,6 @@ class BatchUploader:
             action="store_true",
             help="Generate the CSV file for documents in the given path",
         )
-
         parser.add_argument(
             "--reupload_errors",
             action="store_true",
