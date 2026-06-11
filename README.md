@@ -66,6 +66,14 @@ This is to minimize the impact on our processing servers and load balance. This 
 that if you are on a deadline, you should plan accordingly to upload the documents several days
 before you intend to publish. 
 
+## Default Access Level
+
+Documents are uploaded as private by default to avoid inadvertently uploading
+documents that should remain private. You can upload them as public by adding
+the `--access public` . If you already uploaded documents with the
+wrong access level and don't want to re-upload them, you can use the
+[Change Visibility Add-On](https://www.documentcloud.org/add-ons/MuckRock/change-visibility/)
+to change the access level in bulk.
 
 ## Handling Errors
 The process of uploading documents using the batch upload script is split into two distinct parts: <br>
